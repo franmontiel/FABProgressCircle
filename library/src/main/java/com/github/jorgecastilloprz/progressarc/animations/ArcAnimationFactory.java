@@ -32,7 +32,7 @@ public class ArcAnimationFactory {
   public static final int ROTATE_ANIMATOR_DURATION = 2000;
 
   public static final int SWEEP_ANIM_DURATION = 1000;
-  public static final int COMPLETE_ANIM_DURATION = SWEEP_ANIM_DURATION * 2;
+  public static final int COMPLETE_ANIM_DURATION = 300;
   public static final int COMPLETE_ROTATE_DURATION = COMPLETE_ANIM_DURATION * 6;
 
   public ValueAnimator buildAnimation(Type type,
