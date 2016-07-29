@@ -61,16 +61,21 @@ public final class ProgressArcView extends ProgressBar {
     this.internalListener = internalListener;
   }
 
+    Runnable showRunnable = new Runnable() {
+        @Override
+        public void run() {
+            setAlpha(1);
+            getDrawable().reset();
+        }
+    };
+
   public void show() {
-    postDelayed(new Runnable() {
-      @Override public void run() {
-        setAlpha(1);
-        getDrawable().reset();
-      }
-    }, SHOW_SCALE_ANIM_DELAY);
+    postDelayed(showRunnable, SHOW_SCALE_ANIM_DELAY);
   }
 
   public void stop() {
+      removeCallbacks(showRunnable);
+
     getDrawable().stop();
     ValueAnimator fadeOutAnim = ObjectAnimator.ofFloat(this, "alpha", 1, 0);
     fadeOutAnim.setDuration(100).start();

@@ -38,7 +38,7 @@ import com.github.jorgecastilloprz.library.R;
  */
 public class CompleteFABView extends FrameLayout {
 
-  private final int RESET_DELAY = 3000;
+  private final int RESET_DELAY = 1600;
 
   private Drawable iconDrawable;
   private int arcColor;

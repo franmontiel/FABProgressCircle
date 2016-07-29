@@ -2,14 +2,14 @@ apply plugin: 'com.android.library'
 apply plugin: 'checkstyle'
 
 android {
-  compileSdkVersion parent.ext.androidCompileSdkVersion
-  buildToolsVersion parent.ext.androidBuildToolsVersion
+  compileSdkVersion 22
+  buildToolsVersion  "22.0.1"
 
   defaultConfig {
-    minSdkVersion parent.ext.androidMinSdkVersion
-    targetSdkVersion parent.ext.androidTargetSdkVersion
-    versionCode parent.ext.androidVersionCode
-    versionName parent.ext.androidVersionName
+    minSdkVersion 11
+    targetSdkVersion 22
+    versionCode 3
+    versionName '1.01'
   }
   buildTypes {
     release {
@@ -20,9 +20,9 @@ android {
 }
 
 dependencies {
-  compile parent.ext.libSupport
-  testCompile parent.ext.libRoboelectric
-  testCompile parent.ext.libMockito
+  compile 'com.android.support:support-v4:22.2.0'
+  testCompile 'org.robolectric:robolectric:2.4'
+  testCompile 'org.mockito:mockito-all:1.9.5'
 }
 
 task checkstyle(type: Checkstyle) {

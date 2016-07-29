@@ -277,7 +277,9 @@ final class ProgressArcDrawable extends Drawable implements Animatable {
   }
 
   private void startCompleteAnimationOnNextCycle() {
-    completeAnimOnNextCycle = true;
+//    completeAnimOnNextCycle = true;
+    stop();
+    internalListener.onArcAnimationComplete();
   }
 
   void updateCurrentRotationAngle(float currentRotationAngle) {
