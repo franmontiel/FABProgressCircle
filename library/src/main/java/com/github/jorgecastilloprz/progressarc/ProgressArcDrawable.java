@@ -25,7 +25,9 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.view.animation.DecelerateInterpolator;
+
 import com.github.jorgecastilloprz.progressarc.animations.ArcAnimationFactory;
 
 import static com.github.jorgecastilloprz.utils.AnimationUtils.getAnimatedFraction;
@@ -92,117 +94,118 @@ final class ProgressArcDrawable extends Drawable implements Animatable {
 
   private void setupRotateAnimation() {
     rotateAnim = animationFactory.buildAnimation(ArcAnimationFactory.Type.ROTATE,
-        new ValueAnimator.AnimatorUpdateListener() {
-          @Override public void onAnimationUpdate(ValueAnimator animation) {
-            float angle = getAnimatedFraction(animation) * 360f;
-            updateCurrentRotationAngle(angle);
-          }
-        }, null);
+            new ValueAnimator.AnimatorUpdateListener() {
+              @Override public void onAnimationUpdate(ValueAnimator animation) {
+                float angle = getAnimatedFraction(animation) * 360f;
+                updateCurrentRotationAngle(angle);
+              }
+            }, null);
   }
 
   private void setupGrowAnimation() {
     growAnim = animationFactory.buildAnimation(ArcAnimationFactory.Type.GROW,
-        new ValueAnimator.AnimatorUpdateListener() {
-          @Override public void onAnimationUpdate(ValueAnimator animation) {
-            float animatedFraction = getAnimatedFraction(animation);
-            float angle = minSweepAngle + animatedFraction * (maxSweepAngle - minSweepAngle);
-            updateCurrentSweepAngle(angle);
-          }
-        }, new Animator.AnimatorListener() {
-          boolean cancelled = false;
+            new ValueAnimator.AnimatorUpdateListener() {
+              @Override public void onAnimationUpdate(ValueAnimator animation) {
+                float animatedFraction = getAnimatedFraction(animation);
+                float angle = minSweepAngle + animatedFraction * (maxSweepAngle - minSweepAngle);
+                updateCurrentSweepAngle(angle);
+              }
+            }, new Animator.AnimatorListener() {
+              boolean cancelled = false;
 
-          @Override public void onAnimationStart(Animator animation) {
-            cancelled = false;
-            growing = true;
-          }
+              @Override public void onAnimationStart(Animator animation) {
+                cancelled = false;
+                growing = true;
+              }
 
-          @Override public void onAnimationEnd(Animator animation) {
-            if (!cancelled) {
-              setShrinking();
-              shrinkAnim.start();
-            }
-          }
+              @Override public void onAnimationEnd(Animator animation) {
+                if (!cancelled) {
+                  setShrinking();
+                  shrinkAnim.start();
+                }
+              }
 
-          @Override public void onAnimationCancel(Animator animation) {
-            cancelled = true;
-          }
+              @Override public void onAnimationCancel(Animator animation) {
+                cancelled = true;
+              }
 
-          @Override public void onAnimationRepeat(Animator animation) {
-          }
-        });
+              @Override public void onAnimationRepeat(Animator animation) {
+
+              }
+            });
   }
 
   private void setupShrinkAnimation() {
     shrinkAnim = animationFactory.buildAnimation(ArcAnimationFactory.Type.SHRINK,
-        new ValueAnimator.AnimatorUpdateListener() {
-          @Override public void onAnimationUpdate(ValueAnimator animation) {
-            float animatedFraction = getAnimatedFraction(animation);
-            updateCurrentSweepAngle(
-                maxSweepAngle - animatedFraction * (maxSweepAngle - minSweepAngle));
-          }
-        }, new Animator.AnimatorListener() {
-          boolean cancelled;
-
-          @Override public void onAnimationStart(Animator animation) {
-            cancelled = false;
-          }
-
-          @Override public void onAnimationEnd(Animator animation) {
-            if (!cancelled) {
-              setGrowing();
-              if (completeAnimOnNextCycle) {
-                completeAnimOnNextCycle = false;
-                completeAnim.start();
-              } else {
-                growAnim.start();
+            new ValueAnimator.AnimatorUpdateListener() {
+              @Override public void onAnimationUpdate(ValueAnimator animation) {
+                float animatedFraction = getAnimatedFraction(animation);
+                updateCurrentSweepAngle(
+                        maxSweepAngle - animatedFraction * (maxSweepAngle - minSweepAngle));
               }
-            }
-          }
+            }, new Animator.AnimatorListener() {
+              boolean cancelled;
 
-          @Override public void onAnimationCancel(Animator animation) {
-            cancelled = true;
-          }
+              @Override public void onAnimationStart(Animator animation) {
+                cancelled = false;
+              }
 
-          @Override public void onAnimationRepeat(Animator animation) {
-          }
-        });
+              @Override public void onAnimationEnd(Animator animation) {
+                if (!cancelled) {
+                  setGrowing();
+                  if (completeAnimOnNextCycle) {
+                    completeAnimOnNextCycle = false;
+                    completeAnim.start();
+                  } else {
+                    growAnim.start();
+                  }
+                }
+              }
+
+              @Override public void onAnimationCancel(Animator animation) {
+                cancelled = true;
+              }
+
+              @Override public void onAnimationRepeat(Animator animation) {
+              }
+            });
   }
 
   private void setupCompleteAnimation() {
     completeAnim = animationFactory.buildAnimation(ArcAnimationFactory.Type.COMPLETE,
-        new ValueAnimator.AnimatorUpdateListener() {
+            new ValueAnimator.AnimatorUpdateListener() {
 
-          @Override public void onAnimationUpdate(ValueAnimator animation) {
-            float animatedFraction = getAnimatedFraction(animation);
-            float angle = minSweepAngle + animatedFraction * 360;
-            updateCurrentSweepAngle(angle);
-          }
-        }, new Animator.AnimatorListener() {
-          boolean cancelled = false;
+              @Override public void onAnimationUpdate(ValueAnimator animation) {
+                float animatedFraction = getAnimatedFraction(animation);
+                float angle = minSweepAngle + animatedFraction * 360;
+                updateCurrentSweepAngle(angle);
+              }
+            }, new Animator.AnimatorListener() {
+              boolean cancelled = false;
 
-          @Override public void onAnimationStart(Animator animation) {
-            cancelled = false;
-            growing = true;
-            rotateAnim.setInterpolator(new DecelerateInterpolator());
-            rotateAnim.setDuration(ArcAnimationFactory.COMPLETE_ROTATE_DURATION);
-          }
+              @Override public void onAnimationStart(Animator animation) {
+                cancelled = false;
+                growing = true;
+                rotateAnim.setInterpolator(new DecelerateInterpolator());
+                rotateAnim.setDuration(ArcAnimationFactory.COMPLETE_ROTATE_DURATION);
+              }
 
-          @Override public void onAnimationEnd(Animator animation) {
-            if (!cancelled) {
-              stop();
-            }
+              @Override public void onAnimationEnd(Animator animation) {
+                if (!cancelled) {
+                  stop();
+                }
 
-            completeAnim.removeListener(this);
-            internalListener.onArcAnimationComplete();
-          }
+                completeAnim.removeListener(this);
+                internalListener.onArcAnimationComplete();
+              }
 
-          @Override public void onAnimationCancel(Animator animation) {
-            cancelled = true;
-          }
+              @Override public void onAnimationCancel(Animator animation) {
+                cancelled = true;
+              }
 
-          @Override public void onAnimationRepeat(Animator animation) {
-          }
-        });
+              @Override public void onAnimationRepeat(Animator animation) {
+              }
+            });
   }
 
   @Override public void draw(Canvas canvas) {
@@ -230,10 +233,21 @@ final class ProgressArcDrawable extends Drawable implements Animatable {
 
   @Override protected void onBoundsChange(Rect bounds) {
     super.onBoundsChange(bounds);
-    arcBounds.left = bounds.left;
-    arcBounds.right = bounds.right;
-    arcBounds.top = bounds.top;
-    arcBounds.bottom = bounds.bottom;
+    int offset = getBoundsOffset();
+    arcBounds.left = bounds.left + offset;
+    arcBounds.right = bounds.right - offset;
+    arcBounds.top = bounds.top + offset;
+    arcBounds.bottom = bounds.bottom - offset;
+  }
+
+  /**
+   * This is a workaround for JellyBean version.
+   * For some reason the drawable is cropped. The proposed solution is to decrease the bounds to avoid it.
+   *
+   * @return
+   */
+  private int getBoundsOffset() {
+    return Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN_MR1 ? 2 : 0;
   }
 
   private void setGrowing() {
@@ -305,6 +319,6 @@ final class ProgressArcDrawable extends Drawable implements Animatable {
   }
 
   @Override public int getOpacity() {
-    return PixelFormat.RGB_565;
+    return PixelFormat.OPAQUE;
   }
 }
