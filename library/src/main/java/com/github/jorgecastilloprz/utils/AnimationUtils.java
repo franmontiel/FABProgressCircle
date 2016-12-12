@@ -22,12 +22,20 @@ import android.animation.ValueAnimator;
  */
 public class AnimationUtils {
 
-  public static final int SHOW_SCALE_ANIM_DELAY = 150;
+    public static final int SHOW_SCALE_ANIM_DELAY = 150;
 
-  public static float getAnimatedFraction(ValueAnimator animator) {
-    float fraction = ((float) animator.getCurrentPlayTime()) / animator.getDuration();
-    fraction = Math.min(fraction, 1f);
-    fraction = animator.getInterpolator().getInterpolation(fraction);
-    return fraction;
-  }
+    public static float getAnimatedFraction(ValueAnimator animator) {
+//        float fraction = ((float) animator.getCurrentPlayTime()) /
+//                animator.getDuration();
+//        Log.d("VALUES", "currentPlayTime " + animator.getCurrentPlayTime());
+//        Log.d("VALUES", "getDuration " + animator.getDuration());
+//
+//
+//        Log.d("VALUES", "fraction " + fraction);
+//
+//        fraction = Math.min(fraction, 1f);
+//        fraction = animator.getInterpolator().getInterpolation(fraction);
+//        Log.d("VALUES", "interpolatorFraction " + fraction);
+        return animator.getAnimatedFraction();
+    }
 }
