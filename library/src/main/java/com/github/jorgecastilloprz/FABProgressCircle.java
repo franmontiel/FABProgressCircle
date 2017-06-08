@@ -24,6 +24,7 @@ import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.FrameLayout;
+
 import com.github.jorgecastilloprz.completefab.CompleteFABListener;
 import com.github.jorgecastilloprz.completefab.CompleteFABView;
 import com.github.jorgecastilloprz.library.R;
@@ -86,9 +87,9 @@ public class FABProgressCircle extends FrameLayout implements ArcListener, Compl
       TypedArray attrArray = getAttributes(attrs);
       try {
         arcColor = attrArray.getColor(R.styleable.FABProgressCircle_arcColor,
-            getResources().getColor(R.color.fab_orange_dark));
+                getResources().getColor(R.color.fab_orange_dark));
         arcWidth = attrArray.getDimensionPixelSize(R.styleable.FABProgressCircle_arcWidth,
-            getResources().getDimensionPixelSize(R.dimen.progress_arc_stroke_width));
+                getResources().getDimensionPixelSize(R.dimen.progress_arc_stroke_width));
         completeIconDrawable = attrArray.getDrawable(R.styleable.FABProgressCircle_finalIcon);
         circleSize = attrArray.getInt(R.styleable.FABProgressCircle_circleSize, 1);
         roundedStroke = attrArray.getBoolean(R.styleable.FABProgressCircle_roundedStroke, false);
@@ -103,12 +104,14 @@ public class FABProgressCircle extends FrameLayout implements ArcListener, Compl
     return getContext().obtainStyledAttributes(attrs, R.styleable.FABProgressCircle, 0, 0);
   }
 
-  @Override protected void onFinishInflate() {
+  @Override
+  protected void onFinishInflate() {
     super.onFinishInflate();
     checkChildCount();
   }
 
-  @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+  @Override
+  protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
     super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     if (!viewsAdded) {
       addArcView();
@@ -126,8 +129,8 @@ public class FABProgressCircle extends FrameLayout implements ArcListener, Compl
     progressArc = new ProgressArcView(getContext(), arcColor, arcWidth, roundedStroke);
     progressArc.setInternalListener(this);
     addView(progressArc,
-        new FrameLayout.LayoutParams(getFabDimension() + arcWidth, getFabDimension() + arcWidth,
-            Gravity.CENTER));
+            new FrameLayout.LayoutParams(getFabDimension() + arcWidth, getFabDimension() + arcWidth,
+                    Gravity.CENTER));
   }
 
   private void setupFab() {
@@ -135,7 +138,7 @@ public class FABProgressCircle extends FrameLayout implements ArcListener, Compl
     fabParams.gravity = Gravity.CENTER;
     if (LibraryUtils.isAFutureSimpleFAB(getChildAt(0))) {
       fabParams.topMargin =
-          getResources().getDimensionPixelSize(R.dimen.futuresimple_fab_shadow_offset);
+              getResources().getDimensionPixelSize(R.dimen.futuresimple_fab_shadow_offset);
     }
   }
 
@@ -163,14 +166,17 @@ public class FABProgressCircle extends FrameLayout implements ArcListener, Compl
    * in the async task running.
    */
   public void hide() {
-    progressArc.stop();
+    if (progressArc != null) // TODO Workaround to avoid NPE
+      progressArc.stop();
   }
 
   public void beginFinalAnimation() {
-    progressArc.requestCompleteAnimation();
+    if (progressArc != null) // TODO Workaround to avoid NPE
+      progressArc.requestCompleteAnimation();
   }
 
-  @Override public void onArcAnimationComplete() {
+  @Override
+  public void onArcAnimationComplete() {
     displayColorTransformAnimation();
   }
 
@@ -178,11 +184,11 @@ public class FABProgressCircle extends FrameLayout implements ArcListener, Compl
    * If the code is being executed in api >= 21 the fab could have elevation, so the
    * completeFabView should have at least the same elevation plus 1, to be able to
    * get displayed on top
-   *
+   * <p>
    * If we are in pre lollipop, there is no real elevation, so we just need to add the view
    * normally, as any possible elevation present would be fake (shadow tricks with backgrounds,
    * etc)
-   *
+   * <p>
    * We can use ViewCompat methods to set / get elevation, as they do not do anything when you
    * are in a pre lollipop device.
    */
@@ -196,10 +202,11 @@ public class FABProgressCircle extends FrameLayout implements ArcListener, Compl
     completeFABView = new CompleteFABView(getContext(), completeIconDrawable, arcColor);
     completeFABView.attachListener(this);
     addView(completeFABView,
-        new FrameLayout.LayoutParams(getFabDimension(), getFabDimension(), Gravity.CENTER));
+            new FrameLayout.LayoutParams(getFabDimension(), getFabDimension(), Gravity.CENTER));
   }
 
-  @Override public void onCompleteFABAnimationEnd() {
+  @Override
+  public void onCompleteFABAnimationEnd() {
     doReusableReset();
     if (listener != null) {
       listener.onFABProgressAnimationEnd();

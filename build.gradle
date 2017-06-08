@@ -3,7 +3,7 @@ buildscript {
     jcenter()
   }
   dependencies {
-    classpath 'com.android.tools.build:gradle:2.2.2'
+    classpath 'com.android.tools.build:gradle:2.2.3'
   }
 }
 
@@ -24,7 +24,7 @@ allprojects {
   ext {
     // Android config
     androidCompileSdkVersion = 25
-    androidBuildToolsVersion = "25"
+    androidBuildToolsVersion = "25.0.3"
     androidMinSdkVersion = 15
     androidTargetSdkVersion = 25
     androidApplicationId = 'com.github.jorgecastilloprz.fabprogresscircle'
